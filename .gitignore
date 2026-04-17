@@ -1,3 +1,9 @@
+# build output
+build/
+*.out
+app
+runTests
+
 # Build directories
 /build/
 /build-*/
