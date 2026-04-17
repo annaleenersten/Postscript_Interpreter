@@ -1,4 +1,5 @@
 #include "psdict.h"
+#include "parser.h"
 #include <iostream>
 
 
@@ -21,5 +22,5 @@ Value PSDict::get(const std::string& key) const {
         current = current->parent;
     }
 
-    throw std::runtime_error("Undefined symbol: " + key);
+    throw ParseFailed("Could not find " + key);
 }

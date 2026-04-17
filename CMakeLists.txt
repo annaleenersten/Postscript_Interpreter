@@ -53,6 +53,8 @@ FetchContent_MakeAvailable(googletest)
 # -------------------------
 add_executable(runTests
     tests/test.cpp
+    tests/testStackManipulation.cpp
+    tests/testArithmetic.cpp
 )
 
 target_link_libraries(runTests

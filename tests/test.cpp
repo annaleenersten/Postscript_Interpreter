@@ -43,41 +43,6 @@ TEST(CodeBlockParsing, ParseCodeBlock) {
     EXPECT_EQ(vec.size(), 2);
 }
 
-// ---------- Arithmetic Operation Tests ----------
-
-TEST(Operations, AddIntegers) {
-    reset();
-
-    process_input("1");
-    process_input("2");
-    process_input("add");
-
-    ASSERT_EQ(op_stack.size(), 1);
-    EXPECT_EQ(std::get<int>(op_stack.back()), 3);
-}
-
-TEST(Operations, MulIntegers) {
-    reset();
-
-    process_input("3");
-    process_input("4");
-    process_input("mul");
-
-    ASSERT_EQ(op_stack.size(), 1);
-    EXPECT_EQ(std::get<int>(op_stack.back()), 12);
-}
-
-TEST(Operations, AddDoubles) {
-    reset();
-
-    process_input("2.5");
-    process_input("1.5");
-    process_input("add");
-
-    ASSERT_EQ(op_stack.size(), 1);
-    EXPECT_DOUBLE_EQ(std::get<double>(op_stack.back()), 4.0);
-}
-
 // ---------- Definition (def) Tests ----------
 
 TEST(Operations, DefineAndLookup) {
@@ -108,13 +73,4 @@ TEST(Operations, RedefineVariable) {
 
     ASSERT_EQ(op_stack.size(), 1);
     EXPECT_EQ(std::get<int>(op_stack.back()), 20);
-}
-
-TEST(Operations, DefInvalidKey) {
-    reset();
-
-    process_input("x");   // not a valid /name
-    process_input("10");
-
-    EXPECT_THROW(process_input("def"), TypeMismatch);
 }
