@@ -303,7 +303,6 @@ void begin_operation() {
     }
 
     dict_stack.push_back(std::get<PSDict*>(v));
-    std::cout << "BEGIN dict_stack size = " << dict_stack.size() << "\n";
 }
 
 void end_operation() {
@@ -312,7 +311,6 @@ void end_operation() {
     }
 
     dict_stack.pop_back();
-    std::cout << "END dict_stack size = " << dict_stack.size() << "\n";
 }
 
 void def_operation() {
@@ -651,6 +649,16 @@ void false_operation() {
 //  INPUT/OUTPUT operations
 // ================================================
 
+Value pop_stack() {
+    if (op_stack.empty()) {
+        throw std::runtime_error("stack underflow");
+    }
+
+    Value v = op_stack.back();
+    op_stack.pop_back();
+    return v;
+}
+
 void pop_print_operation() {
     if (!op_stack.empty()) {
         Value v = op_stack.back();
@@ -662,4 +670,35 @@ void pop_print_operation() {
     else {
         throw TypeMismatch("Stack is empty");
     }
+}
+
+void print_operation() {
+    Value v = pop_stack();
+
+    if (!std::holds_alternative<std::string>(v)) {
+        throw TypeMismatch("print expects a string");
+    }
+
+    std::cout << std::get<std::string>(v);
+}
+
+void double_equals_operation() {
+    if (op_stack.empty()) {
+        throw TypeMismatch("Stack is empty");
+    }
+
+    Value v = op_stack.back();
+    op_stack.pop_back();
+
+    if (std::holds_alternative<std::string>(v)) {
+        std::cout << "(" << std::get<std::string>(v) << ")";
+    }
+    else if (std::holds_alternative<PSDict*>(v)) {
+        std::cout << "<<dict>>";
+    }
+    else {
+        print_value(v);
+    }
+
+    std::cout << std::endl;
 }

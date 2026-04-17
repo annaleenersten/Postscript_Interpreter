@@ -69,10 +69,10 @@ void init_interpreter() {
     // dictionary["repeat"] = std::function<void()>(repeat_operation);
     // dictionary["quit"]   = std::function<void()>(quit_operation);
 
-    // // Input and Output
-    // dictionary["="]    = std::function<void()>(pop_print_operation); 
-    // dictionary["print"]      = std::function<void()>(print_operation);
-    // dictionary["=="]     = std::function<void()>(double_equals_operation);
+    // Input and Output
+    dictionary["="]    = std::function<void()>(pop_print_operation); 
+    dictionary["print"]      = std::function<void()>(print_operation);
+    dictionary["=="]     = std::function<void()>(double_equals_operation);
 
 }
 

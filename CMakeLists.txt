@@ -9,7 +9,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 enable_testing()
 
 # -------------------------
-# Main library (your interpreter)
+# Main library
 # -------------------------
 add_library(my_lib
     src/parser.cpp
@@ -27,7 +27,7 @@ target_link_libraries(app
     my_lib
 )
 
-# IMPORTANT: headers live in /include
+# headers
 target_include_directories(my_lib
     PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/include
@@ -58,6 +58,7 @@ add_executable(runTests
     tests/testDictionary.cpp
     tests/testStrings.cpp
     tests/testBooleanAndBitwise.cpp
+    tests/testInputOutput.cpp
 )
 
 target_link_libraries(runTests

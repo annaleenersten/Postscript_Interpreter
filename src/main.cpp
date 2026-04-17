@@ -15,18 +15,73 @@ void print_op_stack() {
     std::cout << "]\n";
 }
 
-void repl() {
-    std::string input;
+std::vector<std::string> tokenize(const std::string& input) {
+    std::vector<std::string> tokens;
 
+    std::string current;
+    bool in_block = false;
+    int brace_depth = 0;
+
+    for (size_t i = 0; i < input.size(); i++) {
+        char c = input[i];
+
+        // Start of code block
+        if (c == '{') {
+            in_block = true;
+            brace_depth++;
+            current += c;
+            continue;
+        }
+
+        // End of code block
+        if (c == '}') {
+            current += c;
+            brace_depth--;
+
+            if (brace_depth == 0) {
+                tokens.push_back(current);
+                current.clear();
+                in_block = false;
+            }
+            continue;
+        }
+
+        // Inside a block → do NOT split
+        if (in_block) {
+            current += c;
+            continue;
+        }
+
+        // Outside block → normal whitespace tokenization
+        if (std::isspace(c)) {
+            if (!current.empty()) {
+                tokens.push_back(current);
+                current.clear();
+            }
+        }
+        else {
+            current += c;
+        }
+    }
+
+    if (!current.empty()) {
+        tokens.push_back(current);
+    }
+
+    return tokens;
+}
+
+void repl() {
+    
     while (true) {
         std::cout << "REPL> ";
+        std::string input;
         std::getline(std::cin, input);
 
         try {
-            std::stringstream ss(input);
-            std::string token;
+            std::vector<std::string> tokens = tokenize(input);
 
-            while (ss >> token) {
+            for (const auto& token : tokens) {
                 if (token == "quit") return;
                 process_input(token);
             }
