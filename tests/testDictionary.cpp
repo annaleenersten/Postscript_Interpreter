@@ -138,3 +138,33 @@ TEST(DictionaryOps, DictAndDefChain) {
     process_input("b");
     EXPECT_EQ(std::get<int>(op_stack.back()), 2);
 }
+
+TEST(DictionaryOps, DefineAndLookup) {
+    reset();
+
+    process_input("/x");
+    process_input("10");
+    process_input("def");
+
+    process_input("x");
+
+    ASSERT_EQ(op_stack.size(), 1);
+    EXPECT_EQ(std::get<int>(op_stack.back()), 10);
+}
+
+TEST(DictionaryOps, RedefineVariable) {
+    reset();
+
+    process_input("/x");
+    process_input("5");
+    process_input("def");
+
+    process_input("/x");
+    process_input("20");
+    process_input("def");
+
+    process_input("x");
+
+    ASSERT_EQ(op_stack.size(), 1);
+    EXPECT_EQ(std::get<int>(op_stack.back()), 20);
+}

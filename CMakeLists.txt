@@ -52,7 +52,7 @@ FetchContent_MakeAvailable(googletest)
 # Test executable
 # -------------------------
 add_executable(runTests
-    tests/test.cpp
+    tests/testParse.cpp
     tests/testStackManipulation.cpp
     tests/testArithmetic.cpp
     tests/testDictionary.cpp
