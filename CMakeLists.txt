@@ -19,11 +19,11 @@ add_library(my_lib
     src/value.cpp
 )
 
-add_executable(app
+add_executable(ps_interpreter
     src/main.cpp
 )
 
-target_link_libraries(app
+target_link_libraries(ps_interpreter
     my_lib
 )
 
