@@ -27,8 +27,13 @@ From the root of the project:
 mkdir build
 cd build
 cmake ..
-make
+cmake --build .
 ```
+
+After building, the `build/` directory will contain:
+
+- `ps_interpreter` → interactive REPL
+- `runTests` → GoogleTest test executable
 
 ---
 
@@ -44,6 +49,25 @@ You will see the REPL prompt:
 
 ```
 REPL>
+```
+
+---
+## Running Tests
+
+This project uses **GoogleTest** for unit testing, integrated with CMake and CTest
+
+<br>
+
+Run the test executable directly (recommended):
+
+```bash id="gtest3"
+./runTests
+```
+
+or use CTest:
+
+```bash id="gtest2"
+ctest
 ```
 
 ---
