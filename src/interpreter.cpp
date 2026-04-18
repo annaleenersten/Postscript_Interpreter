@@ -62,18 +62,17 @@ void init_interpreter() {
     dictionary["true"]   = std::function<void()>(true_operation);
     dictionary["false"]  = std::function<void()>(false_operation);
 
-    // // Flow control
-    // dictionary["if"]     = std::function<void()>(if_operation);
-    // dictionary["ifelse"] = std::function<void()>(ifelse_operation);
-    // dictionary["for"]    = std::function<void()>(for_operation);
-    // dictionary["repeat"] = std::function<void()>(repeat_operation);
-    // dictionary["quit"]   = std::function<void()>(quit_operation);
+    // Flow control
+    dictionary["if"]     = std::function<void()>(if_operation);
+    dictionary["ifelse"] = std::function<void()>(ifelse_operation);
+    dictionary["for"]    = std::function<void()>(for_operation);
+    dictionary["repeat"] = std::function<void()>(repeat_operation);
+    dictionary["quit"]   = std::function<void()>(quit_operation);
 
     // Input and Output
     dictionary["="]    = std::function<void()>(pop_print_operation); 
     dictionary["print"]      = std::function<void()>(print_operation);
     dictionary["=="]     = std::function<void()>(double_equals_operation);
-
 }
 
 

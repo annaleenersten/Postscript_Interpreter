@@ -642,7 +642,130 @@ void false_operation() {
 }
 
 
+// ================================================
+//  Flow Control operations
+// ================================================
 
+Value pop() {
+    if (op_stack.empty()) {
+        throw std::runtime_error("stack underflow");
+    }
+    Value v = op_stack.back();
+    op_stack.pop_back();
+    return v;
+}
+
+void if_operation() {
+    Value proc = pop();
+    Value cond = pop();
+
+    if (!std::holds_alternative<bool>(cond)) {
+        throw TypeMismatch("if expects bool");
+    }
+
+    if (!std::holds_alternative<std::vector<std::string>>(proc)) {
+        throw TypeMismatch("if expects code block");
+    }
+
+    if (std::get<bool>(cond)) {
+        auto block = std::get<std::vector<std::string>>(proc);
+        for (const auto& token : block) {
+            process_input(token);
+        }
+    }
+}
+
+void ifelse_operation() {
+    Value proc2 = pop();
+    Value proc1 = pop();
+    Value cond = pop();
+
+    if (!std::holds_alternative<bool>(cond)) {
+        throw TypeMismatch("ifelse expects bool");
+    }
+
+    if (!std::holds_alternative<std::vector<std::string>>(proc1) ||
+        !std::holds_alternative<std::vector<std::string>>(proc2)) {
+        throw TypeMismatch("ifelse expects code blocks");
+    }
+
+    const auto& block = std::get<bool>(cond)
+        ? std::get<std::vector<std::string>>(proc1)
+        : std::get<std::vector<std::string>>(proc2);
+
+    for (const auto& token : block) {
+        process_input(token);
+    }
+}
+
+void repeat_operation() {
+    Value proc = pop();
+    Value n = pop();
+
+    if (!std::holds_alternative<int>(n)) {
+        throw TypeMismatch("repeat expects int");
+    }
+
+    if (!std::holds_alternative<std::vector<std::string>>(proc)) {
+        throw TypeMismatch("repeat expects code block");
+    }
+
+    int count = std::get<int>(n);
+    const auto& block = std::get<std::vector<std::string>>(proc);
+
+    for (int i = 0; i < count; i++) {
+        for (const auto& token : block) {
+            process_input(token);
+        }
+    }
+}
+
+void for_operation() {
+    Value proc = pop();
+    Value end = pop();
+    Value step = pop();
+    Value start = pop();
+
+    if (!std::holds_alternative<int>(start) ||
+        !std::holds_alternative<int>(step) ||
+        !std::holds_alternative<int>(end)) {
+        throw TypeMismatch("for expects ints");
+    }
+
+    if (!std::holds_alternative<std::vector<std::string>>(proc)) {
+        throw TypeMismatch("for expects code block");
+    }
+
+    int j = std::get<int>(start);
+    int k = std::get<int>(step);
+    int l = std::get<int>(end);
+
+    const auto& block = std::get<std::vector<std::string>>(proc);
+
+    if (k == 0) {
+        throw std::runtime_error("step cannot be 0");
+    }
+
+    if (k > 0) {
+        for (int i = j; i <= l; i += k) {
+            op_stack.push_back(i);
+            for (const auto& token : block) {
+                process_input(token);
+            }
+        }
+    } else {
+        for (int i = j; i >= l; i += k) {
+            op_stack.push_back(i);
+            for (const auto& token : block) {
+                process_input(token);
+            }
+        }
+    }
+}
+
+void quit_operation() {
+    exit(0);
+}
 
 
 // ================================================

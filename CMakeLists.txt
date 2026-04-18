@@ -59,6 +59,7 @@ add_executable(runTests
     tests/testStrings.cpp
     tests/testBooleanAndBitwise.cpp
     tests/testInputOutput.cpp
+    tests/testFlowControl.cpp
 )
 
 target_link_libraries(runTests

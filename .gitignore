@@ -31,7 +31,7 @@ Makefile
 # Debug / logs
 *.log
 
-# IDE files (VSCode, CLion, etc.)
+# IDE files 
 .vscode/
 
 # OS files
