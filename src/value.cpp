@@ -16,14 +16,23 @@ void print_value(const Value& v) {
         else if constexpr (std::is_same_v<T, std::string>) {
             std::cout << arg;
         }
+
         else if constexpr (std::is_same_v<T, std::vector<std::string>>) {
-            std::cout << "[ ";
+            std::cout << "{ ";
             for (const auto& s : arg) std::cout << s << " ";
-            std::cout << "]";
+            std::cout << "}";
         }
+
+        else if constexpr (std::is_same_v<T, CodeBlock>) {
+            std::cout << "{ ";
+            for (const auto& s : arg.code) std::cout << s << " ";
+            std::cout << "}";
+        }
+
         else if constexpr (std::is_same_v<T, std::function<void()>>) {
             std::cout << "<function>";
         }
+
         else if constexpr (std::is_same_v<T, PSDict*>) {
             std::cout << "<dict>";
         }

@@ -302,7 +302,12 @@ void begin_operation() {
         throw std::runtime_error("begin expects dict");
     }
 
-    dict_stack.push_back(std::get<PSDict*>(v));
+    PSDict* new_dict = std::get<PSDict*>(v);
+
+    // link environment chain
+    new_dict->set_parent(dict_stack.back());
+
+    dict_stack.push_back(new_dict);
 }
 
 void end_operation() {
@@ -314,26 +319,31 @@ void end_operation() {
 }
 
 void def_operation() {
-    if (op_stack.size() < 2) {
-        throw TypeMismatch("Not enough operands for def");
+    Value val = op_stack.back(); op_stack.pop_back();
+    Value key = op_stack.back(); op_stack.pop_back();
+
+    if (!std::holds_alternative<std::string>(key)) {
+        throw TypeMismatch("def expects a name");
     }
 
-    Value value = op_stack.back(); op_stack.pop_back();
-    Value keyVal = op_stack.back(); op_stack.pop_back();
+    std::string name = std::get<std::string>(key);
 
-    if (!std::holds_alternative<std::string>(keyVal)) {
-        throw TypeMismatch("Key must be string");
+    if (!name.empty() && name[0] == '/') {
+        name = name.substr(1);
     }
 
-    std::string key = std::get<std::string>(keyVal);
+    PSDict* dict = dict_stack.back();
 
-    if (key.empty() || key[0] != '/') {
-        throw TypeMismatch("Key must start with '/'");
+    CodeBlock cb;
+    cb.defining_env = dict;
+
+    if (std::holds_alternative<std::vector<std::string>>(val)) {
+        cb.code = std::get<std::vector<std::string>>(val);
+        dict->dict[name] = cb;
     }
-
-    key = key.substr(1);
-
-    dict_stack.back()->dict[key] = value;
+    else {
+        dict->dict[name] = val; // ints, bools, etc
+    }
 }
 
 

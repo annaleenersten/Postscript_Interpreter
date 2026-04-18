@@ -4,6 +4,8 @@
 #include <functional>
 #include <stdexcept>
 
+bool STATIC_SCOPING = false;
+
 std::vector<Value> op_stack;
 std::vector<PSDict*> dict_stack;
 
@@ -75,39 +77,69 @@ void init_interpreter() {
     dictionary["=="]     = std::function<void()>(double_equals_operation);
 }
 
-
 void lookup_in_dictionary(const std::string& input) {
+
     for (auto it = dict_stack.rbegin(); it != dict_stack.rend(); ++it) {
 
         PSDict* dict = *it;
-
         auto found = dict->dict.find(input);
-        if (found == dict->dict.end()) {
-            continue;
-        }
+
+        if (found == dict->dict.end()) continue;
 
         Value value = found->second;
 
+        // -------------------------
+        // functions
+        // -------------------------
         if (std::holds_alternative<std::function<void()>>(value)) {
             std::get<std::function<void()>>(value)();
-        }
-        else if (std::holds_alternative<std::vector<std::string>>(value)) {
-            auto code = std::get<std::vector<std::string>>(value);
-            for (const auto& token : code) {
-                process_input(token);
-            }
-        }
-        else {
-            op_stack.push_back(value);
+            return;
         }
 
-        return;
+        // -------------------------
+        // code blocks
+        // -------------------------
+        if (std::holds_alternative<CodeBlock>(value)) {
+
+            CodeBlock cb = std::get<CodeBlock>(value);
+
+            if (STATIC_SCOPING) {
+                dict_stack.push_back(cb.defining_env);
+            }
+
+            for (const auto& token : cb.code) {
+                process_input(token);
+            }
+
+            if (STATIC_SCOPING) {
+                dict_stack.pop_back();
+            }
+
+            return;
+        }
+
+
+        // -------------------------
+        // literals
+        // -------------------------
+        if (std::holds_alternative<int>(value) ||
+            std::holds_alternative<double>(value) ||
+            std::holds_alternative<bool>(value) ||
+            std::holds_alternative<std::string>(value)) {
+
+            op_stack.push_back(value);
+            return;
+        }
+
+        throw std::runtime_error("Unsupported value type in lookup");
     }
 
     throw ParseFailed("Could not find " + input);
 }
 
 void process_input(const std::string& input) {
+
+    // 1. FIRST: try constants (literals)
     try {
         Value v = process_constants(input);
         op_stack.push_back(v);
@@ -117,12 +149,13 @@ void process_input(const std::string& input) {
         // not a literal
     }
 
+    // 2. SECOND: try dictionary lookup (operations like def, add, begin)
     try {
         lookup_in_dictionary(input);
         return;
     }
     catch (const ParseFailed&) {
-        // not found anywhere
+        // not found in dictionary
     }
 
     throw TypeMismatch("Undefined token: " + input);

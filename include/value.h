@@ -7,6 +7,11 @@
 
 class PSDict; 
 
+struct CodeBlock {
+    std::vector<std::string> code;
+    PSDict* defining_env;
+};
+
 using Value = std::variant<
     bool,
     int,
@@ -14,6 +19,7 @@ using Value = std::variant<
     std::string,
     std::vector<std::string>,
     std::function<void()>,
+    CodeBlock,
     PSDict*
 >;
 

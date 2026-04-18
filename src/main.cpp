@@ -2,8 +2,6 @@
 #include <iostream>
 #include <sstream>
 
-bool STATIC_SCOPING = false;
-
 void print_op_stack() {
     std::cout << "OP_STACK = [ ";
 
@@ -13,6 +11,38 @@ void print_op_stack() {
     }
 
     std::cout << "]\n";
+}
+
+void print_dict_stack() {
+    std::cout << "\n===== DICT STACK =====\n";
+
+    for (int i = 0; i < (int)dict_stack.size(); i++) {
+        PSDict* d = dict_stack[i];
+
+        std::cout << "Level " << i;
+
+        if (i == (int)dict_stack.size() - 1)
+            std::cout << " (TOP)";
+        std::cout << "\n";
+
+        std::cout << "Keys: { ";
+
+        for (const auto& [key, val] : d->dict) {
+            std::cout << key << " ";
+        }
+
+        std::cout << "}\n";
+
+        if (d->parent) {
+            std::cout << "Parent exists\n";
+        } else {
+            std::cout << "Parent: nullptr\n";
+        }
+
+        std::cout << "----------------------\n";
+    }
+
+    std::cout << "======================\n\n";
 }
 
 std::vector<std::string> tokenize(const std::string& input) {
@@ -106,6 +136,7 @@ void repl() {
 
         buffer.clear();
         print_op_stack();
+        print_dict_stack();
     }
 }
 
