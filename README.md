@@ -72,33 +72,6 @@ ctest
 
 ---
 
-## Example Usage
-
-### Arithmetic
-
-```
-REPL> 3 4 add
-OP_STACK = [ 7 ]
-```
-
-### Variables
-
-```
-REPL> /x 10 def
-REPL> x
-OP_STACK = [ 10 ]
-```
-
-### Functions
-
-```
-REPL> /square { dup mul } def
-REPL> 5 square
-OP_STACK = [ 25 ]
-```
-
----
-
 ## Scoping Modes
 
 The interpreter supports:
@@ -137,5 +110,76 @@ Expected output:
 
 * Dynamic → `20`
 * Static → `10`
+
+---
+
+## Example Usage of operations
+
+### Arithmetic 
+
+REPL> 3 4 add  
+OP_STACK = [ 7 ]
+
+REPL> 10 2 div  
+OP_STACK = [ 5 ]
+
+REPL> 5 3 mul  
+OP_STACK = [ 15 ]
+
+
+### Variables
+
+REPL> /x 10 def  
+REPL> x  
+OP_STACK = [ 10 ]
+
+REPL> /x 20 def  
+REPL> x  
+OP_STACK = [ 20 ]
+
+
+### Functions 
+
+REPL> /square { dup mul } def  
+REPL> 5 square  
+OP_STACK = [ 25 ]
+
+
+### Control Flow
+
+REPL> true { 42 print } if  
+42
+
+REPL> false { 99 print } if  
+(no output)
+
+REPL> true { 1 print } { 2 print } ifelse  
+1
+
+
+### Comparisons
+
+REPL> 5 5 eq  
+OP_STACK = [ true ]
+
+REPL> 3 10 lt  
+OP_STACK = [ true ]
+
+
+### Loops
+
+REPL> 3 { 100 print } repeat  
+100  
+100  
+100  
+
+
+### Dictionary Stack
+
+REPL> 10 dict begin  
+REPL> /x 5 def  
+REPL> x  
+OP_STACK = [ 5 ]  
+REPL> end
 
 ---
