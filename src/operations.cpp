@@ -820,19 +820,40 @@ void if_operation() {
     Value proc = pop();
     Value cond = pop();
 
-    if (!std::holds_alternative<bool>(cond)) {
-        throw TypeMismatch("if expects bool");
+    // -------------------------
+    // Evaluate truthiness
+    // -------------------------
+    bool is_true = false;
+
+    if (std::holds_alternative<bool>(cond)) {
+        is_true = std::get<bool>(cond);
+    }
+    else if (std::holds_alternative<int>(cond)) {
+        is_true = std::get<int>(cond) != 0;
+    }
+    else if (std::holds_alternative<double>(cond)) {
+        is_true = std::get<double>(cond) != 0.0;
+    }
+    else {
+        throw TypeMismatch("if expects bool or number");
     }
 
+    // -------------------------
+    // Only execute if true
+    // -------------------------
+    if (!is_true) return;
+
+    // -------------------------
+    // Validate code block
+    // -------------------------
     if (!std::holds_alternative<std::vector<std::string>>(proc)) {
         throw TypeMismatch("if expects code block");
     }
 
-    if (std::get<bool>(cond)) {
-        auto block = std::get<std::vector<std::string>>(proc);
-        for (const auto& token : block) {
-            process_input(token);
-        }
+    auto block = std::get<std::vector<std::string>>(proc);
+
+    for (const auto& token : block) {
+        process_input(token);
     }
 }
 
@@ -844,16 +865,33 @@ void ifelse_operation() {
     Value proc1 = pop();
     Value cond = pop();
 
-    if (!std::holds_alternative<bool>(cond)) {
-        throw TypeMismatch("ifelse expects bool");
+    // -------------------------
+    // Truthiness (same as if)
+    // -------------------------
+    bool is_true = false;
+
+    if (std::holds_alternative<bool>(cond)) {
+        is_true = std::get<bool>(cond);
+    }
+    else if (std::holds_alternative<int>(cond)) {
+        is_true = std::get<int>(cond) != 0;
+    }
+    else if (std::holds_alternative<double>(cond)) {
+        is_true = std::get<double>(cond) != 0.0;
+    }
+    else {
+        throw TypeMismatch("ifelse expects bool or number");
     }
 
+    // -------------------------
+    // Validate blocks
+    // -------------------------
     if (!std::holds_alternative<std::vector<std::string>>(proc1) ||
         !std::holds_alternative<std::vector<std::string>>(proc2)) {
         throw TypeMismatch("ifelse expects code blocks");
     }
 
-    const auto& block = std::get<bool>(cond)
+    const auto& block = is_true
         ? std::get<std::vector<std::string>>(proc1)
         : std::get<std::vector<std::string>>(proc2);
 
@@ -968,12 +1006,7 @@ void pop_print_operation() {
  */
 void print_operation() {
     Value v = pop();
-
-    if (!std::holds_alternative<std::string>(v)) {
-        throw TypeMismatch("print expects a string");
-    }
-
-    std::cout << std::get<std::string>(v);
+    print_value(v);  
 }
 
 /*

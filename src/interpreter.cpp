@@ -10,7 +10,7 @@
  * - false: dynamic scoping (default behavior)
  * - true: static scoping (uses defining environment for code blocks)
  */
-bool STATIC_SCOPING = false;
+bool STATIC_SCOPING = true;
 
 /*
  * Operand stack:

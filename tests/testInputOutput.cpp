@@ -10,9 +10,11 @@ extern std::vector<PSDict*> dict_stack;
 extern void reset();
 
 // ================================================
-//  Input/Output Operation Tests
+//  INPUT/OUTPUT Operation Tests
 // ================================================
 
+
+// Helper: Capture std::cout output
 class CaptureCout {
 public:
     std::stringstream buffer;
@@ -31,20 +33,69 @@ public:
     }
 };
 
-TEST(OutputOps, DoubleEqualsString) {
-    reset();
 
+TEST(OutputOps, PrintNumber) {
+    reset();
+    CaptureCout cap;
+
+    process_input("42");
+    process_input("print");
+
+    EXPECT_EQ(cap.str(), "42");
+}
+
+TEST(OutputOps, PrintBoolean) {
+    reset();
+    CaptureCout cap;
+
+    process_input("true");
+    process_input("print");
+
+    EXPECT_EQ(cap.str(), "true");
+}
+
+TEST(OutputOps, PrintString) {
+    reset();
     CaptureCout cap;
 
     process_input("(hello)");
-    process_input("==");
+    process_input("print");
 
-    EXPECT_EQ(cap.str(), "(hello)\n");
+    EXPECT_EQ(cap.str(), "hello");
+}
+
+TEST(OutputOps, EqualsNumber) {
+    reset();
+    CaptureCout cap;
+
+    process_input("42");
+    process_input("=");
+
+    EXPECT_EQ(cap.str(), "42\n");
+}
+
+TEST(OutputOps, EqualsBoolean) {
+    reset();
+    CaptureCout cap;
+
+    process_input("true");
+    process_input("=");
+
+    EXPECT_EQ(cap.str(), "true\n");
+}
+
+TEST(OutputOps, EqualsString) {
+    reset();
+    CaptureCout cap;
+
+    process_input("(world)");
+    process_input("=");
+
+    EXPECT_EQ(cap.str(), "world\n");
 }
 
 TEST(OutputOps, DoubleEqualsNumber) {
     reset();
-
     CaptureCout cap;
 
     process_input("42");
@@ -55,7 +106,6 @@ TEST(OutputOps, DoubleEqualsNumber) {
 
 TEST(OutputOps, DoubleEqualsBoolean) {
     reset();
-
     CaptureCout cap;
 
     process_input("true");
@@ -64,9 +114,18 @@ TEST(OutputOps, DoubleEqualsBoolean) {
     EXPECT_EQ(cap.str(), "true\n");
 }
 
+TEST(OutputOps, DoubleEqualsString) {
+    reset();
+    CaptureCout cap;
+
+    process_input("(hello)");
+    process_input("==");
+
+    EXPECT_EQ(cap.str(), "(hello)\n");
+}
+
 TEST(OutputOps, DoubleEqualsDict) {
     reset();
-
     CaptureCout cap;
 
     process_input("10");
@@ -76,20 +135,8 @@ TEST(OutputOps, DoubleEqualsDict) {
     EXPECT_EQ(cap.str(), "<<dict>>\n");
 }
 
-TEST(OutputOps, DoubleEqualsStringFormatting) {
+TEST(OutputOps, DoubleEqualsEmptyStack) {
     reset();
-
-    CaptureCout cap;
-
-    process_input("(world)");
-    process_input("==");
-
-    EXPECT_EQ(cap.str(), "(world)\n");
-}
-
-TEST(OutputOps, DoubleEqualsStackEmpty) {
-    reset();
-
     CaptureCout cap;
 
     EXPECT_THROW(process_input("=="), TypeMismatch);
