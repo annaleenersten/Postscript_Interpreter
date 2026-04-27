@@ -486,7 +486,7 @@ void get_string_operation() {
         throw std::out_of_range("index out of bounds");
     }
 
-    op_stack.push_back((int)s[index]);
+    op_stack.push_back(std::string(1, s[index]));
 }
 
 /*

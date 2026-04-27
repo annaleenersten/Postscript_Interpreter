@@ -44,7 +44,7 @@ TEST(StringOps, GetCharacterBasic) {
     process_input("1");
     process_input("get");
 
-    EXPECT_EQ(std::get<int>(op_stack.back()), (int)'e');
+    EXPECT_EQ(std::get<std::string>(op_stack.back()), "e");
 }
 
 TEST(StringOps, GetCharacterOutOfBounds) {
