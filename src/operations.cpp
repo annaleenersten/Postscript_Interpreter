@@ -1005,7 +1005,7 @@ void pop_print_operation() {
  * Prints string
  */
 void print_operation() {
-    Value v = pop();
+    Value v = op_stack.back();
     print_value(v); 
     std::cout << std::endl; 
 }
@@ -1019,7 +1019,6 @@ void double_equals_operation() {
     }
 
     Value v = op_stack.back();
-    op_stack.pop_back();
 
     if (std::holds_alternative<std::string>(v)) {
         std::cout << "(" << std::get<std::string>(v) << ")";
